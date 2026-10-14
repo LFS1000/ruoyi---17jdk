@@ -24,8 +24,9 @@ CREATE TABLE `edu_counselor` (
   `updater` varchar(64) NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
+  `active_job_no` varchar(64) GENERATED ALWAYS AS (IF(`deleted` = b'0', `job_no`, NULL)) VIRTUAL COMMENT '未删除时的工号（用于唯一约束，已删除记录为NULL）',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`) USING BTREE
+  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `active_job_no`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '辅导员表';
 
 -- ------------------------------------------------------------------------
@@ -68,8 +69,9 @@ CREATE TABLE `edu_teacher` (
   `updater` varchar(64) NULL DEFAULT '' COMMENT '更新者',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
+  `active_job_no` varchar(64) GENERATED ALWAYS AS (IF(`deleted` = b'0', `job_no`, NULL)) VIRTUAL COMMENT '未删除时的工号（用于唯一约束，已删除记录为NULL）',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`) USING BTREE
+  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `active_job_no`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '教师表';
 
 -- ========================================================================
