@@ -50,7 +50,9 @@ public class TeacherServiceImpl implements TeacherService {
         validateJobNoUnique(updateReqVO.getId(), updateReqVO.getJobNo());
         // 3. 更新教师
         try {
-            teacherMapper.updateById(BeanUtils.toBean(updateReqVO, TeacherDO.class));
+            if (teacherMapper.updateById(BeanUtils.toBean(updateReqVO, TeacherDO.class)) != 1) {
+            throw exception(TEACHER_NOT_EXISTS);
+        }
         } catch (DuplicateKeyException e) {
             throw exception(TEACHER_JOB_NO_DUPLICATE);
         }
@@ -61,7 +63,9 @@ public class TeacherServiceImpl implements TeacherService {
         // 1. 校验教师存在
         validateTeacherExists(id);
         // 2. 删除教师
-        teacherMapper.deleteById(id);
+        if (teacherMapper.deleteById(id) != 1) {
+            throw exception(TEACHER_NOT_EXISTS);
+        }
     }
 
     @Override

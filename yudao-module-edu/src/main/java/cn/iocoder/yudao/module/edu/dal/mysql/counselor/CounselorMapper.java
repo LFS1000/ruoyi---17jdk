@@ -5,6 +5,7 @@ import cn.iocoder.yudao.framework.mybatis.core.mapper.BaseMapperX;
 import cn.iocoder.yudao.framework.mybatis.core.query.LambdaQueryWrapperX;
 import cn.iocoder.yudao.module.edu.controller.admin.counselor.vo.CounselorPageReqVO;
 import cn.iocoder.yudao.module.edu.dal.dataobject.counselor.CounselorDO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -17,6 +18,17 @@ public interface CounselorMapper extends BaseMapperX<CounselorDO> {
 
     default CounselorDO selectByJobNo(String jobNo) {
         return selectOne(CounselorDO::getJobNo, jobNo);
+    }
+
+    /**
+     * 根据编号查询辅导员（加 FOR UPDATE 行锁）
+     *
+     * 用于 deleteCounselor / updateCounselor 之间的并发互斥，避免产生孤儿班级数据。
+     */
+    default CounselorDO selectByIdForUpdate(Long id) {
+        return selectOne(new LambdaQueryWrapper<CounselorDO>()
+                .eq(CounselorDO::getId, id)
+                .last("FOR UPDATE"));
     }
 
     default PageResult<CounselorDO> selectPage(CounselorPageReqVO reqVO) {

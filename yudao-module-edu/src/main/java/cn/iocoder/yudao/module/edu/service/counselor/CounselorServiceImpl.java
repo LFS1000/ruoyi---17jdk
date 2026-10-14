@@ -62,8 +62,11 @@ public class CounselorServiceImpl implements CounselorService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateCounselor(CounselorSaveReqVO updateReqVO) {
-        // 1. 校验辅导员存在
-        validateCounselorExists(updateReqVO.getId());
+        // 1. 锁定辅导员行，避免与 deleteCounselor 并发产生孤儿班级数据
+        CounselorDO counselor = counselorMapper.selectByIdForUpdate(updateReqVO.getId());
+        if (counselor == null) {
+            throw exception(COUNSELOR_NOT_EXISTS);
+        }
         // 2. 校验工号唯一
         validateJobNoUnique(updateReqVO.getId(), updateReqVO.getJobNo());
         // 3. 校验所带班级有效性（一个班级只能有一个主辅导员）
@@ -71,7 +74,9 @@ public class CounselorServiceImpl implements CounselorService {
         // 4. 更新辅导员
         CounselorDO updateObj = BeanUtils.toBean(updateReqVO, CounselorDO.class);
         try {
-            counselorMapper.updateById(updateObj);
+            if (counselorMapper.updateById(updateObj) != 1) {
+                throw exception(COUNSELOR_NOT_EXISTS);
+            }
         } catch (DuplicateKeyException e) {
             throw exception(COUNSELOR_JOB_NO_DUPLICATE);
         }
@@ -82,14 +87,19 @@ public class CounselorServiceImpl implements CounselorService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteCounselor(Long id) {
-        // 1. 校验辅导员存在
-        validateCounselorExists(id);
+        // 1. 锁定辅导员行，避免与 updateCounselor 并发产生孤儿班级数据
+        CounselorDO counselor = counselorMapper.selectByIdForUpdate(id);
+        if (counselor == null) {
+            throw exception(COUNSELOR_NOT_EXISTS);
+        }
         // 2. 校验名下没有未移交的班级
         if (counselorClassMapper.selectCountByCounselorId(id) > 0) {
             throw exception(COUNSELOR_CLASS_NOT_TRANSFERRED);
         }
         // 3. 删除辅导员
-        counselorMapper.deleteById(id);
+        if (counselorMapper.deleteById(id) != 1) {
+            throw exception(COUNSELOR_NOT_EXISTS);
+        }
     }
 
     @Override
@@ -117,11 +127,6 @@ public class CounselorServiceImpl implements CounselorService {
                 CounselorClassDO::getCounselorId, CounselorClassDO::getClassName);
     }
 
-    private void validateCounselorExists(Long id) {
-        if (counselorMapper.selectById(id) == null) {
-            throw exception(COUNSELOR_NOT_EXISTS);
-        }
-    }
 
     private void validateJobNoUnique(Long id, String jobNo) {
         if (jobNo == null) {
