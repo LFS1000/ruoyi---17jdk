@@ -46,6 +46,12 @@
             <artifactId>yudao-spring-boot-starter-redis</artifactId>
         </dependency>
 
+        <!-- 多租户相关 -->
+        <dependency>
+            <groupId>cn.iocoder.boot</groupId>
+            <artifactId>yudao-spring-boot-starter-biz-tenant</artifactId>
+        </dependency>
+
         <!-- 工具类相关 -->
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
@@ -56,6 +62,7 @@
         <dependency>
             <groupId>cn.iocoder.boot</groupId>
             <artifactId>yudao-spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

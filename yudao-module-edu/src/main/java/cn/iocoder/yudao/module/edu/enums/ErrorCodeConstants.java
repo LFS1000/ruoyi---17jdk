@@ -16,6 +16,7 @@ public interface ErrorCodeConstants {
     ErrorCode COUNSELOR_JOB_NO_DUPLICATE = new ErrorCode(1_090_001_001, "辅导员工号已存在");
     ErrorCode COUNSELOR_CLASS_NOT_TRANSFERRED = new ErrorCode(1_090_001_002, "该辅导员名下仍有班级未移交，无法删除");
     ErrorCode COUNSELOR_CLASS_ALREADY_ASSIGNED = new ErrorCode(1_090_001_003, "班级【{}】已由其他辅导员担任主辅导员，请先移交");
+    ErrorCode COUNSELOR_CLASS_DUPLICATE = new ErrorCode(1_090_001_004, "所带班级已被分配，请刷新后重试");
 
     // ========== 教师管理 1-090-002-000 ==========
     ErrorCode TEACHER_NOT_EXISTS = new ErrorCode(1_090_002_000, "教师不存在");

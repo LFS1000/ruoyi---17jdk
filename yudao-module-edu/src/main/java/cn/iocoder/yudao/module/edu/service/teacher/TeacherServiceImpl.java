@@ -6,6 +6,7 @@ import cn.iocoder.yudao.module.edu.controller.admin.teacher.vo.TeacherPageReqVO;
 import cn.iocoder.yudao.module.edu.controller.admin.teacher.vo.TeacherSaveReqVO;
 import cn.iocoder.yudao.module.edu.dal.dataobject.teacher.TeacherDO;
 import cn.iocoder.yudao.module.edu.dal.mysql.teacher.TeacherMapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -33,7 +34,11 @@ public class TeacherServiceImpl implements TeacherService {
         validateJobNoUnique(null, createReqVO.getJobNo());
         // 2. 插入教师
         TeacherDO teacher = BeanUtils.toBean(createReqVO, TeacherDO.class);
-        teacherMapper.insert(teacher);
+        try {
+            teacherMapper.insert(teacher);
+        } catch (DuplicateKeyException e) {
+            throw exception(TEACHER_JOB_NO_DUPLICATE);
+        }
         return teacher.getId();
     }
 
@@ -44,7 +49,11 @@ public class TeacherServiceImpl implements TeacherService {
         // 2. 校验工号唯一
         validateJobNoUnique(updateReqVO.getId(), updateReqVO.getJobNo());
         // 3. 更新教师
-        teacherMapper.updateById(BeanUtils.toBean(updateReqVO, TeacherDO.class));
+        try {
+            teacherMapper.updateById(BeanUtils.toBean(updateReqVO, TeacherDO.class));
+        } catch (DuplicateKeyException e) {
+            throw exception(TEACHER_JOB_NO_DUPLICATE);
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import cn.iocoder.yudao.module.edu.dal.dataobject.counselor.CounselorClassDO;
 import cn.iocoder.yudao.module.edu.dal.dataobject.counselor.CounselorDO;
 import cn.iocoder.yudao.module.edu.dal.mysql.counselor.CounselorClassMapper;
 import cn.iocoder.yudao.module.edu.dal.mysql.counselor.CounselorMapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -48,7 +49,11 @@ public class CounselorServiceImpl implements CounselorService {
         validateClassNames(null, createReqVO.getClassNames());
         // 3. 插入辅导员
         CounselorDO counselor = BeanUtils.toBean(createReqVO, CounselorDO.class);
-        counselorMapper.insert(counselor);
+        try {
+            counselorMapper.insert(counselor);
+        } catch (DuplicateKeyException e) {
+            throw exception(COUNSELOR_JOB_NO_DUPLICATE);
+        }
         // 4. 保存所带班级
         saveCounselorClasses(counselor.getId(), createReqVO.getClassNames());
         return counselor.getId();
@@ -65,7 +70,11 @@ public class CounselorServiceImpl implements CounselorService {
         validateClassNames(updateReqVO.getId(), updateReqVO.getClassNames());
         // 4. 更新辅导员
         CounselorDO updateObj = BeanUtils.toBean(updateReqVO, CounselorDO.class);
-        counselorMapper.updateById(updateObj);
+        try {
+            counselorMapper.updateById(updateObj);
+        } catch (DuplicateKeyException e) {
+            throw exception(COUNSELOR_JOB_NO_DUPLICATE);
+        }
         // 5. 保存所带班级
         saveCounselorClasses(updateReqVO.getId(), updateReqVO.getClassNames());
     }
@@ -160,7 +169,11 @@ public class CounselorServiceImpl implements CounselorService {
         }
         List<CounselorClassDO> classList = CollectionUtils.convertList(classNames, className ->
                 CounselorClassDO.builder().counselorId(counselorId).className(className).build());
-        counselorClassMapper.insertBatch(classList);
+        try {
+            counselorClassMapper.insertBatch(classList);
+        } catch (DuplicateKeyException e) {
+            throw exception(COUNSELOR_CLASS_DUPLICATE);
+        }
     }
 
 }

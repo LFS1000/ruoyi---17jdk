@@ -1,6 +1,6 @@
 package cn.iocoder.yudao.module.edu.dal.dataobject.counselor;
 
-import cn.iocoder.yudao.framework.mybatis.core.dataobject.BaseDO;
+import cn.iocoder.yudao.framework.tenant.core.db.TenantBaseDO;
 import com.baomidou.mybatisplus.annotation.KeySequence;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -21,7 +21,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CounselorClassDO extends BaseDO {
+public class CounselorClassDO extends TenantBaseDO {
 
     /**
      * 编号

@@ -10,6 +10,7 @@
 DROP TABLE IF EXISTS `edu_counselor`;
 CREATE TABLE `edu_counselor` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '辅导员编号',
+  `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户编号',
   `job_no` varchar(64) NOT NULL COMMENT '工号',
   `name` varchar(64) NOT NULL COMMENT '姓名',
   `gender` tinyint NULL DEFAULT NULL COMMENT '性别',
@@ -24,7 +25,7 @@ CREATE TABLE `edu_counselor` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_job_no` (`job_no`) USING BTREE
+  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`, `deleted`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '辅导员表';
 
 -- ------------------------------------------------------------------------
@@ -33,6 +34,7 @@ CREATE TABLE `edu_counselor` (
 DROP TABLE IF EXISTS `edu_counselor_class`;
 CREATE TABLE `edu_counselor_class` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户编号',
   `counselor_id` bigint NOT NULL COMMENT '辅导员编号',
   `class_name` varchar(64) NOT NULL COMMENT '班级名称',
   `creator` varchar(64) NULL DEFAULT '' COMMENT '创建者',
@@ -42,7 +44,7 @@ CREATE TABLE `edu_counselor_class` (
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `idx_counselor_id` (`counselor_id`) USING BTREE,
-  KEY `idx_class_name` (`class_name`) USING BTREE
+  UNIQUE KEY `uk_tenant_class_name` (`tenant_id`, `class_name`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '辅导员带班表';
 
 -- ------------------------------------------------------------------------
@@ -51,6 +53,7 @@ CREATE TABLE `edu_counselor_class` (
 DROP TABLE IF EXISTS `edu_teacher`;
 CREATE TABLE `edu_teacher` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '教师编号',
+  `tenant_id` bigint NOT NULL DEFAULT 0 COMMENT '租户编号',
   `job_no` varchar(64) NOT NULL COMMENT '工号',
   `name` varchar(64) NOT NULL COMMENT '姓名',
   `gender` tinyint NULL DEFAULT NULL COMMENT '性别',
@@ -66,7 +69,7 @@ CREATE TABLE `edu_teacher` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
-  KEY `idx_job_no` (`job_no`) USING BTREE
+  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`, `deleted`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '教师表';
 
 -- ========================================================================
