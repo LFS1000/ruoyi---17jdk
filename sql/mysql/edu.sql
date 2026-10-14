@@ -25,7 +25,7 @@ CREATE TABLE `edu_counselor` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`, `deleted`) USING BTREE
+  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '辅导员表';
 
 -- ------------------------------------------------------------------------
@@ -69,7 +69,7 @@ CREATE TABLE `edu_teacher` (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`, `deleted`) USING BTREE
+  UNIQUE KEY `uk_tenant_job_no` (`tenant_id`, `job_no`) USING BTREE
 ) ENGINE = InnoDB COMMENT = '教师表';
 
 -- ========================================================================
